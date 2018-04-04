@@ -1,5 +1,6 @@
 ## >>>
-### 2. Remove columns or patterns in Prophane summary
+### Part 2 : Data manipulation
+### Remove columns or patterns in Prophane summary
 ### a. Function - Remove columns with "unique_spectra_of_" and remove "tr|" in the "hit.list" column
 ## >>>
 
@@ -12,7 +13,7 @@ supp_colonnes_df <- function(my_data, ...){
 }
 
 ## >>>
-### d.  Merge Prophane summary and CAZyme file by hit.list column
+### b.  Merge Prophane summary and CAZyme file by hit.list column
 ## >>>
 
 merge_func <- function(my_data1, my_data2, ...){
