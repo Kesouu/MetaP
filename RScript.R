@@ -87,4 +87,8 @@ Norm4Replicate <- function(my_data,  pattern, colname,...){
   return(Merge_summary_final_part1)
 }
 
+## >>>
+### Part 4 : Replace heterogeneous and unclassified taxonomy
+## >>>
+
 
