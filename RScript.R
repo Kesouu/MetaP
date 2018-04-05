@@ -88,7 +88,49 @@ Norm4Replicate <- function(my_data,  pattern, colname,...){
 }
 
 ## >>>
-### Part 4 : Replace heterogeneous and unclassified taxonomy
+### Part 4 : Replace heterogeneous and unclassified taxonomy by "htg.last known taxonomy" or "uncl.last known taxonomy"
 ## >>>
 
+  #matrice : matrix to correct
+  #col : column to correct
+  #colKingdom : column position, Kingdom column must be >6
 
+# heterogeneous :
+  Replaceheterogeneous <- function(matrice, col,colKingdom) {
+    
+    for (i in 1:nrow(matrice)) {
+      if (((col-colKingdom)>0)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-1]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-1], sep = "")
+      } else if (((col-colKingdom)>1)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-2]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-2], sep = "")
+      } else if (((col-colKingdom)>2)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-3]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-3], sep = "")
+      } else if (((col-colKingdom)>3)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-4]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-4], sep = "")
+      } else if (((col-colKingdom)>4)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-5]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-5], sep = "")
+      } else if (((col-colKingdom)>5)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-6]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-6], sep = "")
+      }
+    }
+    return(matrice)  
+  }
+  
+  ReplaceAllheterogeneous <- function(matrice,colKingdom) {
+    for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceheterogeneous(matrice,i,colKingdom)}
+    return(matrice)
+  }
+
+# unclassified :
+Replaceunclassified <- function(matrice, col,colKingdom) {
+    
+    for (i in 1:nrow(matrice)) {
+      if (((col-colKingdom)>0)&(matrice[i,col]=="unclassified")&(matrice[i,col-1]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-1], sep = "")
+      } else if (((col-colKingdom)>1)&(matrice[i,col]=="unclassified")&(matrice[i,col-2]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-2], sep = "")
+      } else if (((col-colKingdom)>2)&(matrice[i,col]=="unclassified")&(matrice[i,col-3]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-3], sep = "")
+      } else if (((col-colKingdom)>3)&(matrice[i,col]=="unclassified")&(matrice[i,col-4]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-4], sep = "")
+      } else if (((col-colKingdom)>4)&(matrice[i,col]=="unclassified")&(matrice[i,col-5]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-5], sep = "")
+      } else if (((col-colKingdom)>5)&(matrice[i,col]=="unclassified")&(matrice[i,col-6]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-6], sep = "")
+      }
+    }
+    return(matrice)  
+  }
+  
+  ReplaceAllunclassified <- function(matrice,colKingdom) {
+    for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceunclassified(matrice,i,colKingdom)}
+    return(matrice)
+  }
