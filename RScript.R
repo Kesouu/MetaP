@@ -57,7 +57,7 @@ Norm2Replicate <- function(my_data,  pattern, colname,...){
   part2 <- apply(part1,1,mean, na.rm=T)
   part2 <- data.frame(part2)
   colnames(part2) <- c(colname)
-  Merge_summary_final_part1 <- cbind.data.frame(Merge_summary_final1,part2)
+  Merge_summary_final_part1 <- cbind.data.frame(Merge_summary_final_part1,part2)
   return(Merge_summary_final_part1)
 }
 
