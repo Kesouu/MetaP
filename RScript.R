@@ -32,8 +32,7 @@ Norm3Replicate <- function(my_data,  pattern, colname,...){
   part2 <- ifelse((apply(part1==0,1,sum)>=2),0,part1[,1])
   part3 <- ifelse((apply(part1==0,1,sum)>=2),0,part1[,2])
   part4 <- ifelse((apply(part1==0,1,sum)>=2),0,part1[,3])
-  part5 <- cbind(A=part2,B=part3,C=part4)
-  part5 <- data.frame(part5)
+  part5 <- as.data.frame(cbind(A=part2,B=part3,C=part4))
   part6 <- apply(part5,2,sum)
   part6 <- data.frame(part6)
   part7 <- part5$A/part6[1,]
@@ -48,17 +47,44 @@ Norm3Replicate <- function(my_data,  pattern, colname,...){
   return(Merge_summary_final_part1)
 }
 
-### c. Function in case of 2 replicates - if 2 values are available else keep values, or paste 0 if <2 values are available. Renormalize the NSAF value between [0-1]
-### Then, mean 3 replicates (or 2 if 3rd value is 0)
+### c. Function in case of 2 replicates - mean
 ## >>>
 
 Norm2Replicate <- function(my_data,  pattern, colname,...){
   part1 <- select(my_data,matches(pattern))
   part1 <- data.frame(part1)
-  #part1 <- replacer(part1, 0,NA)
-  part2 <- apply(part1,1,mean) #na.rm=T
+  part1 <- replacer(part1, 0,NA)
+  part2 <- apply(part1,1,mean, na.rm=T)
   part2 <- data.frame(part2)
   colnames(part2) <- c(colname)
   Merge_summary_final_part1 <- cbind.data.frame(Merge_summary_final1,part2)
   return(Merge_summary_final_part1)
 }
+
+### d. Function in case of 4 replicates - if 2 values are available else keep values, or paste 0 if <2 values are available. Renormalize the NSAF value between [0-1]
+### Then, mean 4 replicates (or 2/3 if 1 or 2 values are 0)
+## >>>
+
+Norm4Replicate <- ffunction(my_data,  pattern, colname,...){
+  part1 <- select(my_data,matches(pattern))
+  part2 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,1])
+  part3 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,2])
+  part4 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,3])
+  part5 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,4])
+  part6 <- as.data.frame(cbind(A=part2,B=part3,C=part4,D=part5))
+  part7 <- apply(part6,2,sum)
+  part7 <- data.frame(part7)
+  part8 <- part6$A/part7[1,]
+  part9 <- part6$B/part7[2,]
+  part10 <- part6$C/part7[3,]
+  part11 <- part6$D/part7[4,]
+  part12 <- as.data.frame(cbind(test8_NSAF,test9_NSAF,test10_NSAF,test11_NSAF))
+  part12 <- replacer(part12, 0,NA)
+  part13 <- apply(part12,1,mean,na.rm=T)
+  part13 <- data.frame(part13)
+  colnames(part13) <- c(colname)
+  Merge_summary_final_part1<-cbind.data.frame(Merge_summary_final_part1,part13)
+  return(Merge_summary_final_part1)
+}
+
+
