@@ -65,7 +65,7 @@ Norm2Replicate <- function(my_data,  pattern, colname,...){
 ### Then, mean 4 replicates (or 2/3 if 1 or 2 values are 0)
 ## >>>
 
-Norm4Replicate <- ffunction(my_data,  pattern, colname,...){
+Norm4Replicate <- function(my_data,  pattern, colname,...){
   part1 <- select(my_data,matches(pattern))
   part2 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,1])
   part3 <- ifelse((apply(part1=="0",1,sum)>=2),0,part1[,2])
