@@ -1,3 +1,14 @@
+library("plyr")
+library("dplyr") 
+library("tidyr")
+library("stats") 
+library("reshape2") 
+library("gplots")
+library("ggplot2")
+library("data.table")
+library("stringr")
+library("qdap")
+
 ## >>>
 ### Part 2 : Data manipulation
 ### Remove columns or patterns in Prophane summary
@@ -91,46 +102,98 @@ Norm4Replicate <- function(my_data,  pattern, colname,...){
 ### Part 4 : Replace heterogeneous and unclassified taxonomy by "htg.last known taxonomy" or "uncl.last known taxonomy"
 ## >>>
 
-  #matrice : matrix to correct
-  #col : column to correct
-  #colKingdom : column position, Kingdom column must be >6
+## >>>
+### b. Function for heterogeneous
+## >>>
+
+#matrice : matrix to correct
+#col : column to correct
+#colKingdom : column position, Kingdom column must be >6
 
 # heterogeneous :
-  Replaceheterogeneous <- function(matrice, col,colKingdom) {
-    
-    for (i in 1:nrow(matrice)) {
-      if (((col-colKingdom)>0)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-1]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-1], sep = "")
-      } else if (((col-colKingdom)>1)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-2]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-2], sep = "")
-      } else if (((col-colKingdom)>2)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-3]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-3], sep = "")
-      } else if (((col-colKingdom)>3)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-4]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-4], sep = "")
-      } else if (((col-colKingdom)>4)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-5]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-5], sep = "")
-      } else if (((col-colKingdom)>5)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-6]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-6], sep = "")
-      }
-    }
-    return(matrice)  
-  }
+Replaceheterogeneous <- function(matrice, col,colKingdom) {
   
-  ReplaceAllheterogeneous <- function(matrice,colKingdom) {
-    for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceheterogeneous(matrice,i,colKingdom)}
-    return(matrice)
+  for (i in 1:nrow(matrice)) {
+    if (((col-colKingdom)>0)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-1]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-1], sep = "")
+    } else if (((col-colKingdom)>1)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-2]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-2], sep = "")
+    } else if (((col-colKingdom)>2)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-3]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-3], sep = "")
+    } else if (((col-colKingdom)>3)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-4]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-4], sep = "")
+    } else if (((col-colKingdom)>4)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-5]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-5], sep = "")
+    } else if (((col-colKingdom)>5)&(matrice[i,col]=="heterogeneous")&(matrice[i,col-6]!="heterogeneous")) {matrice[i,col]<-paste("Htg.", matrice[i,col-6], sep = "")
+    }
   }
+  return(matrice)  
+}
 
-# unclassified :
+ReplaceAllheterogeneous <- function(matrice,colKingdom) {
+  for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceheterogeneous(matrice,i,colKingdom)}
+  return(matrice)
+}
+
+## >>>
+### c. Function for unclassified 
+## >>>
+
 Replaceunclassified <- function(matrice, col,colKingdom) {
-    
-    for (i in 1:nrow(matrice)) {
-      if (((col-colKingdom)>0)&(matrice[i,col]=="unclassified")&(matrice[i,col-1]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-1], sep = "")
-      } else if (((col-colKingdom)>1)&(matrice[i,col]=="unclassified")&(matrice[i,col-2]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-2], sep = "")
-      } else if (((col-colKingdom)>2)&(matrice[i,col]=="unclassified")&(matrice[i,col-3]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-3], sep = "")
-      } else if (((col-colKingdom)>3)&(matrice[i,col]=="unclassified")&(matrice[i,col-4]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-4], sep = "")
-      } else if (((col-colKingdom)>4)&(matrice[i,col]=="unclassified")&(matrice[i,col-5]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-5], sep = "")
-      } else if (((col-colKingdom)>5)&(matrice[i,col]=="unclassified")&(matrice[i,col-6]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-6], sep = "")
-      }
-    }
-    return(matrice)  
-  }
   
-  ReplaceAllunclassified <- function(matrice,colKingdom) {
-    for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceunclassified(matrice,i,colKingdom)}
-    return(matrice)
+  for (i in 1:nrow(matrice)) {
+    if (((col-colKingdom)>0)&(matrice[i,col]=="unclassified")&(matrice[i,col-1]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-1], sep = "")
+    } else if (((col-colKingdom)>1)&(matrice[i,col]=="unclassified")&(matrice[i,col-2]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-2], sep = "")
+    } else if (((col-colKingdom)>2)&(matrice[i,col]=="unclassified")&(matrice[i,col-3]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-3], sep = "")
+    } else if (((col-colKingdom)>3)&(matrice[i,col]=="unclassified")&(matrice[i,col-4]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-4], sep = "")
+    } else if (((col-colKingdom)>4)&(matrice[i,col]=="unclassified")&(matrice[i,col-5]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-5], sep = "")
+    } else if (((col-colKingdom)>5)&(matrice[i,col]=="unclassified")&(matrice[i,col-6]!="unclassified")) {matrice[i,col]<-paste("Uncl.", matrice[i,col-6], sep = "")
+    }
   }
+  return(matrice)  
+}
+
+ReplaceAllunclassified <- function(matrice,colKingdom) {
+  for (i in (colKingdom+6):(colKingdom+1)) {matrice<-Replaceunclassified(matrice,i,colKingdom)}
+  return(matrice)
+}
+
+## >>>
+### g. Scale NSAF values between [0-1] for each column [because we remove proteins in previous step]
+## >>> 
+
+Normalisation_col <- function(mydata)
+{
+  sweep(mydata,2, colSums(mydata),"/")
+}
+
+## >>>
+### h. Mean of biological replicate
+## >>> 
+
+#With only 1 pattern
+Mean_BiolRepl1 <- function(my_data,nomcol,pattern1, ...)
+{
+  part1<-select(my_data,matches(pattern1))
+  part2<-apply(part1,1,mean,na.rm=F)
+  part2<-data.frame(part2)
+  colnames(part2)<-c(nomcol)
+  my_data<-cbind.data.frame(my_data,part2)
+  return(my_data)
+}
+
+#With 2 patterns
+Mean_BiolRepl2 <- function(my_data,nomcol,pattern1,pattern2, ...)
+{
+  part1<-select(my_data,ends_with(pattern2))
+  part1<-select(part1,starts_with(pattern1))
+  part2<-apply(part1,1,mean,na.rm=F)
+  part2<-data.frame(part2)
+  colnames(part2)<-c(nomcol)
+  my_data<-cbind.data.frame(my_data,part2)
+  return(my_data)
+}
+
+## >>>
+### Part 5 : Data analysis
+## >>>
+
+#Threshold function
+abundFilter <- function(abund.table,threshold) {
+  return(rbind(abund.table[(apply(abund.table, 1, max) > threshold),],apply(abund.table[(apply(abund.table, 1, max) <= threshold),], 2, sum)))
+}
